@@ -34,17 +34,22 @@ class Author:
 
 class Magazine:
     def __init__(self, name, category):
-        self.name = name
-        self.category = category
+        if isinstance(name, str) and 2 <= len(name) <= 16:
+            self.name = name
+            self.category = category
 
     def articles(self):
         return [article for article in Article.all if article.magazine == self]
 
     def contributors(self):
-        pass
+        return list(set(article.author for article in self.articles()))
 
     def article_titles(self):
-        pass
+        return [article.title for article in self.articles()]
 
     def contributing_authors(self):
-        pass
+        contributing_authors = [
+            author for author in self.contributors()
+            if len([article for article in self.articles() if article.author == author]) > 2
+        ]
+        return contributing_authors if contributing_authors else None
